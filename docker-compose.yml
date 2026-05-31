@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: fpvhub-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-fpvhub}
+      POSTGRES_USER: ${POSTGRES_USER:-fpvhub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fpvhub}
+    ports:
+      - "5432:5432"
+    volumes:
+      - fpvhub_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fpvhub} -d ${POSTGRES_DB:-fpvhub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: fpvhub-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - fpvhub_redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fpvhub-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_DB: ${POSTGRES_DB:-fpvhub}
+      POSTGRES_USER: ${POSTGRES_USER:-fpvhub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fpvhub}
+      EMAIL_VALIDATION_ENABLED: ${EMAIL_VALIDATION_ENABLED:-false}
+      EMAIL_VALIDATION_FAIL_OPEN: ${EMAIL_VALIDATION_FAIL_OPEN:-true}
+      EMAIL_VALIDATION_API_URL: ${EMAIL_VALIDATION_API_URL:-https://emailreputation.abstractapi.com/v1/}
+      EMAIL_VALIDATION_API_KEY: ${EMAIL_VALIDATION_API_KEY:-}
+      EMAIL_VALIDATION_PROXY_HOST: ${EMAIL_VALIDATION_PROXY_HOST:-}
+      EMAIL_VALIDATION_PROXY_PORT: ${EMAIL_VALIDATION_PROXY_PORT:-0}
+      GITHUB_OAUTH_ENABLED: ${GITHUB_OAUTH_ENABLED:-false}
+      GITHUB_OAUTH_CLIENT_ID: ${GITHUB_OAUTH_CLIENT_ID:-}
+      GITHUB_OAUTH_CLIENT_SECRET: ${GITHUB_OAUTH_CLIENT_SECRET:-}
+      GITHUB_OAUTH_REDIRECT_URI: ${GITHUB_OAUTH_REDIRECT_URI:-http://localhost:8080/oauth2/github/callback}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  fpvhub_postgres_data:
+  fpvhub_redis_data:

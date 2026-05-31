@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: fpvhub
+  profiles:
+    default: dev
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  error:
+    whitelabel:
+      enabled: false
+
+logging:
+  level:
+    root: info
+    ru.itis.fpvhub: debug
+    org.springframework.web: info
+    org.hibernate.SQL: debug
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+app:
+  email-validation:
+    enabled: ${EMAIL_VALIDATION_ENABLED:false}
+    fail-open: ${EMAIL_VALIDATION_FAIL_OPEN:true}
+    api-url: ${EMAIL_VALIDATION_API_URL:https://emailreputation.abstractapi.com/v1/}
+    api-key: ${EMAIL_VALIDATION_API_KEY:}
+    proxy-host: ${EMAIL_VALIDATION_PROXY_HOST:}
+    proxy-port: ${EMAIL_VALIDATION_PROXY_PORT:0}
+  oauth:
+    github:
+      enabled: ${GITHUB_OAUTH_ENABLED:false}
+      client-id: ${GITHUB_OAUTH_CLIENT_ID:}
+      client-secret: ${GITHUB_OAUTH_CLIENT_SECRET:}
+      redirect-uri: ${GITHUB_OAUTH_REDIRECT_URI:http://localhost:8080/oauth2/github/callback}
