@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "FPVHub Stage 6 REST API",
+    "description": "Postman collection for FPVHub article REST API. Use writer/writer12345 or admin/admin12345 for protected endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "articleId",
+      "value": "1"
+    },
+    {
+      "key": "categoryId",
+      "value": "1"
+    },
+    {
+      "key": "tagId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Articles - public",
+      "item": [
+        {
+          "name": "Get published articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles"]
+            }
+          }
+        },
+        {
+          "name": "Get article by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles/{{articleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles", "{{articleId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Articles - writer/admin",
+      "item": [
+        {
+          "name": "Create article as writer",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "writer", "type": "string"},
+                {"key": "password", "value": "writer12345", "type": "string"}
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"REST API статья про настройку FPV\",\n  \"summary\": \"Тестовая статья, созданная через REST API для проверки OpenAPI и Postman коллекции.\",\n  \"content\": \"Это достаточно длинный текст статьи для прохождения серверной валидации. Здесь описывается базовая проверка FPV-квадрокоптера: рама, моторы, ESC, полетный контроллер, приемник, видеосвязь и failsafe. Текст создан через REST API.\",\n  \"coverImageUrl\": null,\n  \"videoUrl\": null,\n  \"categoryId\": {{categoryId}},\n  \"tagIds\": [{{tagId}}],\n  \"publicationAction\": \"review\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles"]
+            }
+          }
+        },
+        {
+          "name": "Update article as writer/admin",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "writer", "type": "string"},
+                {"key": "password", "value": "writer12345", "type": "string"}
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"REST API статья про настройку FPV обновлена\",\n  \"summary\": \"Обновленное описание статьи через REST API для проверки PUT-запроса.\",\n  \"content\": \"Это обновленный достаточно длинный текст статьи для прохождения серверной валидации. Здесь остаются основные тезисы про проверку FPV-квадрокоптера, настройку Betaflight, порядок моторов, failsafe и видеосвязь.\",\n  \"coverImageUrl\": null,\n  \"videoUrl\": null,\n  \"categoryId\": {{categoryId}},\n  \"tagIds\": [{{tagId}}],\n  \"publicationAction\": \"draft\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles/{{articleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles", "{{articleId}}"]
+            }
+          }
+        },
+        {
+          "name": "Archive article as writer/admin",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "admin", "type": "string"},
+                {"key": "password", "value": "admin12345", "type": "string"}
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles/{{articleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles", "{{articleId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Negative checks",
+      "item": [
+        {
+          "name": "Create article without auth - expected 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Too short\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles"]
+            }
+          }
+        },
+        {
+          "name": "Create invalid article as writer - expected 400 JSON",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "writer", "type": "string"},
+                {"key": "password", "value": "writer12345", "type": "string"}
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Short\",\n  \"summary\": \"Short\",\n  \"content\": \"Short\",\n  \"categoryId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/articles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "articles"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
