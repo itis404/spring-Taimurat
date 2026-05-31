@@ -162,6 +162,3 @@ http://localhost:8080/oauth2/github/callback
 - `docs/er-diagram.md` — ER-диаграмма в Mermaid;
 - `docs/testing-checklist.md` — чеклист ручной проверки;
 - `docs/integration/stage7-external-api-and-oauth.md` — внешние интеграции.
-=======
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Knv-_QWg)
->>>>>>> 2afbd6251b7fc50dbbe33b38821eb809bce52af9
