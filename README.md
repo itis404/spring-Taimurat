@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # FPVHub
 
 FPVHub — MPA-форум и база знаний по FPV-квадрокоптерам. Проект реализован на Java 21, Spring Boot, Spring MVC, JSP/JSTL, Spring Security, PostgreSQL, Spring Data JPA, ручных JPA/Criteria-запросах, Redis, Docker Compose, REST API, OpenAPI, AJAX, внешнем Email Reputation API и ручном GitHub OAuth.
